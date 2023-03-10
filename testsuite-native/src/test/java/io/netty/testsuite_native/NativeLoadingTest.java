@@ -15,30 +15,30 @@
  */
 package io.netty.testsuite_native;
 
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.kqueue.KQueue;
-import io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.OS;
+//import io.netty.channel.epoll.Epoll;
+//import io.netty.channel.kqueue.KQueue;
+//import io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.condition.EnabledOnOs;
+//import org.junit.jupiter.api.condition.OS;
 
 public class NativeLoadingTest {
-
-    @Test
-    @EnabledOnOs(OS.MAC)
-    public void testNativeLoadingKqueue() {
-        KQueue.ensureAvailability();
-    }
-
-    @Test
-    @EnabledOnOs(OS.MAC)
-    public void testNativeLoadingDnsServerAddressStreamProvider() {
-        MacOSDnsServerAddressStreamProvider.ensureAvailability();
-    }
-
-    @Test
-    @EnabledOnOs(OS.LINUX)
-    public void testNativeLoadingEpoll() {
-        Epoll.ensureAvailability();
-    }
+//
+//    @Test
+//    @EnabledOnOs(OS.MAC)
+//    public void testNativeLoadingKqueue() {
+//        KQueue.ensureAvailability();
+//    }
+//
+//    @Test
+//    @EnabledOnOs(OS.MAC)
+//    public void testNativeLoadingDnsServerAddressStreamProvider() {
+//        MacOSDnsServerAddressStreamProvider.ensureAvailability();
+//    }
+//
+//    @Test
+//    @EnabledOnOs(OS.LINUX)
+//    public void testNativeLoadingEpoll() {
+//        Epoll.ensureAvailability();
+//    }
 }

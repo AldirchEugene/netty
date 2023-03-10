@@ -70,14 +70,22 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
      */
     protected MultithreadEventExecutorGroup(int nThreads, Executor executor,
                                             EventExecutorChooserFactory chooserFactory, Object... args) {
+        // 检查线程数量是否大于0
         checkPositive(nThreads, "nThreads");
 
+        // 初始状态传入的executor是null，然后创建一个ThreadPerTaskExecutor类型的执行器，
+        // 并且在通过new的方式创建执行器的时候调用newDefaultThreadFactory()方法创建了一个ThreadFactory对象。
+        // 也就是说执行器executor是ThreadPerTaskExecutor类型，并且执行器内绑定了一个线程工厂(ThreadFactory)
         if (executor == null) {
             executor = new ThreadPerTaskExecutor(newDefaultThreadFactory());
         }
 
+        // 创建一个和线程数大小相同的事件执行器数组 EventExecutor[],这个数据就是用来存事件执行器的
         children = new EventExecutor[nThreads];
 
+        // 使用for循环来创建事件执行器(EventExecutor),并存储到 EventExecutor[]数组中。
+        // 每个事件执行器是通过newChild方法创建的，这个方法还传入了一个executor(ThreadPerTaskExecutor)
+        // 和初始传进来的args(SelectStrategyFactory、RejectedExecutionHandler)
         for (int i = 0; i < nThreads; i ++) {
             boolean success = false;
             try {

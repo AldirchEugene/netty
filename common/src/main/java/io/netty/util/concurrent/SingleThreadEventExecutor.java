@@ -952,6 +952,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
             if (STATE_UPDATER.compareAndSet(this, ST_NOT_STARTED, ST_STARTED)) {
                 boolean success = false;
                 try {
+                    System.out.println("真正的启动NioEventLoop线程");
                     doStartThread();
                     success = true;
                 } finally {

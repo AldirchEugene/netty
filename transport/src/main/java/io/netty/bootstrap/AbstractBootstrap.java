@@ -269,6 +269,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     }
 
     private ChannelFuture doBind(final SocketAddress localAddress) {
+        // 创建服务端Channel、初始化服务端Channel、注册服务端Channel
         final ChannelFuture regFuture = initAndRegister();
         final Channel channel = regFuture.channel();
         if (regFuture.cause() != null) {
@@ -296,6 +297,9 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
                         // See https://github.com/netty/netty/issues/2586
                         promise.registered();
 
+                        // 添加了一个服务端Channel注册成功的监听器，监听到服务端Channel注册成功之后就会触发这个监听器；
+                        // 然后进行绑定端口
+                        System.out.println("服务端Channel注册成功回调监听器");
                         doBind0(regFuture, channel, localAddress, promise);
                     }
                 }
@@ -307,7 +311,9 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
+            // 创建服务端Channel
             channel = channelFactory.newChannel();
+            // 初始化服务端Channel
             init(channel);
         } catch (Throwable t) {
             if (channel != null) {
@@ -320,6 +326,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
 
+        // 注册服务端Channel
         ChannelFuture regFuture = config().group().register(channel);
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {
@@ -349,10 +356,12 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
 
         // This method is invoked before channelRegistered() is triggered.  Give user handlers a chance to set up
         // the pipeline in its channelRegistered() implementation.
+        System.out.println("调用execute启动服务端NioEventLoop线程去执行任务啦");
         channel.eventLoop().execute(new Runnable() {
             @Override
             public void run() {
                 if (regFuture.isSuccess()) {
+                    System.out.println("服务端Channel注册成功，现在进行绑定端口");
                     channel.bind(localAddress, promise).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                 } else {
                     promise.setFailure(regFuture.cause());

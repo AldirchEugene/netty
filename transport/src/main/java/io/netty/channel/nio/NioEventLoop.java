@@ -507,6 +507,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
 
     @Override
     protected void run() {
+        System.out.println("进入到NioEventLoop类中执行run方法....");
         int selectCnt = 0;
         for (;;) {
             try {

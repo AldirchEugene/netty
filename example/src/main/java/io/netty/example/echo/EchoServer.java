@@ -74,3 +74,15 @@ public final class EchoServer {
         }
     }
 }
+/*
+* 1、服务端Channel注册成功之后，进行端口绑定，这个是事件是outBound事件，传播是从tail --> LoggingHandler --> head, 传播到head节点就调用
+* jdk底层的绑定端口方法进行绑定端口
+* 2、端口绑定成功之后，就进行active事件传播，active是一个inbound事件，传播是从 head --> LoggingHandler --> tail, 然后端口就绑定成功
+* 3、服务端Channel就是Active状态了，然后服务端Channel就表示我要关注读事件了，然后执行 readIfIsAutoRead();又进行事件传播，
+* 关注read事件是一个outBound事件，传播是从tail --> head（中间直接从tail到head） ，然后调用 unsafe.beginRead()，在调用 doBeginRead();
+* 最后进入AbstractNioChannel的doBeginRead方法，首先是获取服务端Channel的selectionKey，从selectionKey上获取interestOps，
+* 目前的interestOps=0；readInterestOp=16，readInterestOp是当初反射创建NioServerSocketChannel传入的就是16，然后重新给selectionKey的
+* interestOps属性设置值为16，表示我现在要关注读了。
+*
+*
+* */

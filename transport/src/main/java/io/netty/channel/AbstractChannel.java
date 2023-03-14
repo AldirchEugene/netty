@@ -475,7 +475,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
             }
 
             AbstractChannel.this.eventLoop = eventLoop;
-
+            // 当前是main线程，所以不是NioEventLoop线程
             if (eventLoop.inEventLoop()) {
                 register0(promise);
             } else {
@@ -483,6 +483,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                     eventLoop.execute(new Runnable() {
                         @Override
                         public void run() {
+                            // 执行注册
                             register0(promise);
                         }
                     });
@@ -505,6 +506,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                     return;
                 }
                 boolean firstRegistration = neverRegistered;
+                // 真正的服务端Channel注册
                 doRegister();
                 neverRegistered = false;
                 registered = true;
@@ -513,7 +515,11 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 // user may already fire events through the pipeline in the ChannelFutureListener.
                 pipeline.invokeHandlerAddedIfNeeded();
 
+                // 回调AbstractBootstrap类中添加的服务端Channel注册成功的监听器regFuture.addListener(new ChannelFutureListener())
                 safeSetSuccess(promise);
+
+                // 触发服务端Channel注册成功的事件
+                System.out.println("触发ChannelRegistered事件");
                 pipeline.fireChannelRegistered();
                 // Only fire a channelActive if the channel has never been registered. This prevents firing
                 // multiple channel actives if the channel is deregistered and re-registered.
@@ -570,7 +576,9 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 invokeLater(new Runnable() {
                     @Override
                     public void run() {
+                        System.out.println("开始执行fireChannelActive");
                         pipeline.fireChannelActive();
+                        System.out.println("执行fireChannelActive结束");
                     }
                 });
             }

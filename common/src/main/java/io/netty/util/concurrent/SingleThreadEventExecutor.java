@@ -952,7 +952,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
             if (STATE_UPDATER.compareAndSet(this, ST_NOT_STARTED, ST_STARTED)) {
                 boolean success = false;
                 try {
-                    System.out.println("真正的启动NioEventLoop线程");
+                    System.out.println("真正的去启动NioEventLoop线程");
                     doStartThread();
                     success = true;
                 } finally {
@@ -984,6 +984,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
     private void doStartThread() {
         assert thread == null;
+        System.out.println("进入到execute方法，就会看到调用.start()启动nioEventLoop线程，然后你需要切换线程到nioEventLoop继续debug");
         executor.execute(new Runnable() {
             @Override
             public void run() {
